@@ -115,9 +115,7 @@ module Glitr
     end
 
     def self.build_all(entity_map)
-      entity_map.map do |type, entities|
-        entities.map {|id, attrs| new(id, attrs) }
-      end.flatten
+      entities.map {|id, attrs| new(id, attrs) }
     end
 
     def namespaced_key(key)
