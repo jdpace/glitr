@@ -114,7 +114,7 @@ module Glitr
       @connection ||= Glitr::Connection.new(:service => "metamodl_#{Rails.env}")
     end
 
-    def self.build_all(entity_map)
+    def self.build_all(entities)
       entities.map {|id, attrs| new(id, attrs) }
     end
 
