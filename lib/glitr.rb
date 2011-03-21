@@ -1,4 +1,2 @@
 require 'glitr/connection'
-
-module Glitr
-end
+require 'glitr/base'
