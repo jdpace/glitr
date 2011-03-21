@@ -33,7 +33,7 @@ module Glitr
     def query_uri(query)
       escaped_query = CGI.escape(query.gsub(/\s+/, ' ').strip)
       uri  = "#{options[:protocol]}://"
-      uri << "#{options[:host]}/#{options[:service]}"
+      uri << "#{options[:host]}:#{options[:port]}/#{options[:service]}"
       uri << "?output=csv&query=#{escaped_query}"
     end
 

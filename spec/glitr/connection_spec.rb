@@ -26,7 +26,7 @@ describe Glitr::Connection do
       QUERY
 
       uri = connection.query_uri(query)
-      uri.should == 'http://localhost/foo?output=csv&query=SELECT+%3Ffoo+WHERE+%7B+%3Ffoo+%3Abar+%22baz%22+%7D'
+      uri.should == 'http://localhost:2020/foo?output=csv&query=SELECT+%3Ffoo+WHERE+%7B+%3Ffoo+%3Abar+%22baz%22+%7D'
     end
   end
 
