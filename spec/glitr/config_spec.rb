@@ -4,7 +4,7 @@ describe Glitr::Config do
 
   context "#configure" do
     it "saves config values" do
-      Gliture.configure do |config|
+      Glitr.configure do |config|
         config.cache_store = 'Foo'
       end
 
