@@ -1,6 +1,7 @@
 module Glitr
 
   class Base
+    include Comparable
 
     attr_accessor :id, :attributes
 
@@ -106,6 +107,10 @@ module Glitr
       else
         super
       end
+    end
+
+    def <=>(other)
+      self.attributes <=> other.attributes
     end
 
     private
