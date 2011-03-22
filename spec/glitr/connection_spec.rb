@@ -41,6 +41,26 @@ describe Glitr::Connection do
       result[0]['_predicate'].should == 'foo'
       result[0]['_object'].should == 'bar'
     end
+
+    context 'with a cache store configured' do
+      before do
+        Glitr.configure do |config|
+          config.cache_store = DummyCacheStore.new
+        end
+      end
+
+      it 'caches the response' do
+        connection.expects(:get_response).once.returns("foo\nbar")
+
+        response_a = connection.fetch('http://example.com/foo?query=SELECT+*')
+        response_b = connection.fetch('http://example.com/foo?query=SELECT+*')
+        response_c = connection.fetch('http://example.com/foo?query=SELECT+*')
+
+        [response_a, response_b, response_c].each do |response|
+          response.first['foo'].should == 'bar'
+        end
+      end
+    end
   end
 
   context '#query_subjects' do
@@ -59,4 +79,14 @@ end
 def stub_response(connection, fixture_name)
   fixture = SpecRoot.join 'fixtures', 'responses', "#{fixture_name}.csv"
   connection.stubs(:get_response).returns fixture.read
+end
+
+class DummyCacheStore
+  def initialize
+    @cache = {}
+  end
+
+  def fetch(key, &block)
+    @cache[key] ||= yield
+  end
 end
