@@ -1,6 +1,7 @@
 module Glitr
 
   class Base
+    include Comparable
 
     attr_accessor :id, :attributes
 
@@ -76,16 +77,18 @@ module Glitr
       end
     end
 
+    def <=>(other)
+      self.attributes <=> other.attributes
+    end
+
     private
 
     def self.connection
       @connection ||= Glitr::Connection.new(:service => "metamodl_#{Rails.env}")
     end
 
-    def self.build_all(entity_map)
-      entity_map.map do |type, entities|
-        entities.map {|id, attrs| new(id, attrs) }
-      end.flatten
+    def self.build_all(entities)
+      entities.map {|id, attrs| new(id, attrs) }
     end
 
     def namespaced_key(key)
