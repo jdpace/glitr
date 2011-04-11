@@ -32,6 +32,10 @@ describe Glitr::Connection do
 
   context '#fetch' do
     it 'parses a response from the server as CSV' do
+      Glitr.configure do |config|
+        config.cache_store = nil
+      end
+
       stub_response connection, :simple
 
       result = connection.fetch "DUMMY QUERY"
