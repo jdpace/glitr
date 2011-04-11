@@ -17,12 +17,20 @@ module Glitr
       @entity_type = type
     end
 
-    def self.namespace
-      @namespace
+    def self.primary_key
+      @primary_key ||= :uuid
     end
 
-    def self.namespace=(ns)
-      @namespace = ns
+    def self.primary_key=(key)
+      @primary_key = key
+    end
+
+    def self.prefix
+      @prefix
+    end
+
+    def self.prefix=(pre)
+      @prefix = RDF::Vocabulary.new(pre)
     end
 
     def self.count(conditions = {})
@@ -46,20 +54,17 @@ module Glitr
 
     # Query Builder Methods
     class << self
-      %w(select where limit all first).each do |query_builder_method|
-        define_method query_builder_method do |*args|
-          QueryBuilder.new(self).send query_builder_method, *args
+      %w(select where limit offset order bind optional filter find all first).each do |relation_method|
+        define_method relation_method do |*args|
+          Relation.new(self).send relation_method, *args
         end
       end
 
-      def execute_query(query_builder)
-        query = query_builder.to_sparql
+      def query(relation)
+        query = relation.to_sparql
+        results = connection.fetch query
 
-        if query_builder.subjectify?
-          build_all fetch_subjects(query)
-        else
-          fetch query
-        end
+        should_objectify?(results) ? objectify(results) : results
       end
     end
 
@@ -84,7 +89,35 @@ module Glitr
     private
 
     def self.connection
-      @connection ||= Glitr::Connection.new(:service => "metamodl_#{Rails.env}")
+      @connection ||= Glitr::Connection.new(:service => "metamodl_development")
+    end
+
+    def self.should_objectify?(results)
+      results.headers == %w(_subject _predicate _object)
+    end
+
+    def self.objectify(results)
+      build_all subjectify(results)
+    end
+
+    def self.subjectify(results)
+      by_subject = results.group_by {|row| row['_subject'] }
+      by_subject.each do |subject, rows|
+        by_subject[subject] = rows.reduce({}) do |attrs, row|
+          predicate, object = row['_predicate'], row['_object']
+
+          if attrs.has_key?(predicate)
+            attrs[predicate]  = *attrs[predicate] unless attrs[predicate].is_a?(Array)
+            attrs[predicate] << object
+          else
+            attrs[predicate] = object
+          end
+
+          attrs
+        end
+      end
+
+      by_subject
     end
 
     def self.build_all(entities)
@@ -92,7 +125,7 @@ module Glitr
     end
 
     def namespaced_key(key)
-      "#{self.class.namespace}/#{key}"
+      "#{self.class.prefix}#{key}"
     end
 
   end

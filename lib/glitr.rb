@@ -1,5 +1,4 @@
 require 'glitr/config'
 require 'glitr/connection'
-require 'glitr/query_builder'
+require 'glitr/relation'
 require 'glitr/base'
-

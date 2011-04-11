@@ -2,14 +2,17 @@ PATH
   remote: .
   specs:
     glitr (0.0.1)
-      typhoeus (~> 0.2.4)
+      sparql-client (~> 0.0.9)
 
 GEM
   remote: http://rubygems.org/
   specs:
+    addressable (2.2.4)
     diff-lcs (1.1.2)
-    mime-types (1.16)
+    json_pure (1.5.1)
     mocha (0.9.12)
+    rdf (0.3.1)
+      addressable (>= 2.2)
     rspec (2.2.0)
       rspec-core (~> 2.2)
       rspec-expectations (~> 2.2)
@@ -18,9 +21,9 @@ GEM
     rspec-expectations (2.5.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.5.0)
-    typhoeus (0.2.4)
-      mime-types
-      mime-types
+    sparql-client (0.0.9)
+      json_pure (>= 1.4.2)
+      rdf (~> 0.3.0)
 
 PLATFORMS
   ruby
@@ -29,3 +32,4 @@ DEPENDENCIES
   glitr!
   mocha (~> 0.9.10)
   rspec (~> 2.2.0)
+  sparql-client (~> 0.0.9)
