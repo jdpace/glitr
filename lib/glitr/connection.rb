@@ -1,5 +1,5 @@
 require 'cgi'
-require 'csv'
+require 'bamfcsv'
 require 'typhoeus'
 
 module Glitr
@@ -20,8 +20,8 @@ module Glitr
 
     def fetch(query)
       csv = get_cached_response(query_uri query)
-      CSV.parse(csv, :headers => true)
-    rescue CSV::MalformedCSVError => e
+      BAMFCSV.parse(csv, :headers => true)
+    rescue BAMFCSV::MalformedCSVError => e
       raise MalformedResponseError.new(csv)
     end
 
