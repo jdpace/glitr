@@ -82,6 +82,29 @@ module Glitr
       result.first && result.first['count'].to_i
     end
 
+    def self.columns
+      return @columns if defined?(@columns)
+
+      namespace = "http://metrumrg.com/metamodl/"
+      query = <<-QUERY
+        PREFIX :   <#{namespace}>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+        SELECT DISTINCT ?column
+        WHERE {
+
+          ?#{entity_type} rdf:type :#{entity_type};
+                  ?column ?_ .
+        }
+      QUERY
+
+      result = connection.fetch(query)
+      @columns = result.
+        select {|row| row['column'].match(/^#{namespace}/)}.
+        map {|row| row['column'].sub(/^#{namespace}/,"") }
+    end
+
 
     def self.build_filters(entity_type, conditions)
       conditions.reject! {|attr, value| value.blank?}
