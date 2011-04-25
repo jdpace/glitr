@@ -54,7 +54,7 @@ module Glitr
 
     # Query Builder Methods
     class << self
-      %w(select where limit offset order bind optional filter find all first).each do |relation_method|
+      %w(select where limit offset order bind optional filter find columns all first).each do |relation_method|
         define_method relation_method do |*args|
           Relation.new(self).send relation_method, *args
         end

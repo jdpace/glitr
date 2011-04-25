@@ -103,6 +103,10 @@ module Glitr
       select("count(#{counter} as count)").first['count'].to_i
     end
 
+    def columns
+      # IMPLEMENT
+    end
+
     def to_sparql
       sparql = SPARQL::Client::Query.new form
 
