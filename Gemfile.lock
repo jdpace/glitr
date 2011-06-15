@@ -32,4 +32,3 @@ DEPENDENCIES
   glitr!
   mocha (~> 0.9.10)
   rspec (~> 2.2.0)
-  sparql-client (~> 0.0.9)
