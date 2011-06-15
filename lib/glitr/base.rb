@@ -25,6 +25,11 @@ module Glitr
       @namespace = ns
     end
 
+    class << self
+      alias :set_entity_type :entity_type=
+      alias :set_namespace :namespace=
+    end
+
     def self.all(conditions = {})
       query = <<-QUERY
         PREFIX :   <http://metrumrg.com/metamodl/>

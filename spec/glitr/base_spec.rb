@@ -18,4 +18,22 @@ describe Glitr::Base do
     end
   end
 
+  context "set_entity_type" do
+    it "allows setting the entity type in the inherited class body" do
+      class Model < Glitr::Base
+        set_entity_type "MyModel"
+      end
+      Model.entity_type.should == "MyModel"
+    end
+  end
+
+  context "set_namespace" do
+    it "allows setting the namespace in the inherited class body" do
+      class Model < Glitr::Base
+        set_namespace "http://example.com/example"
+      end
+      Model.namespace.should == "http://example.com/example"
+    end
+  end
+
 end
