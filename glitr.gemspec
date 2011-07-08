@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   # Runtime Dependencies
   s.add_runtime_dependency 'typhoeus', ['~> 0.2.4']
-  s.add_runtime_dependency 'bamfcsv', ['~> 0.1.3']
+  s.add_runtime_dependency 'bamfcsv', ['~> 0.3.0']
 
   # Developmnet Dependencies
   s.add_development_dependency 'rspec', ['~> 2.2.0']
