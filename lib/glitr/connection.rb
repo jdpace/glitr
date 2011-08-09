@@ -33,7 +33,9 @@ module Glitr
 
     def get(query)
       uri = query_uri(query)
-      Typhoeus::Request.get(uri, :timeout => 60_000)
+      response = Typhoeus::Request.get(uri, :timeout => 60_000)
+      force_encoding_on(response)
+      response
     end
 
     def csv_from(response)
@@ -77,6 +79,10 @@ module Glitr
         :port     => 2020,
         :protocol => 'http'
       }
+    end
+
+    def force_encoding_on(response)
+      response.body.force_encoding('UTF-8')
     end
 
   end
