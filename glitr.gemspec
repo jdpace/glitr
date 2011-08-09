@@ -24,6 +24,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'bamfcsv', ['~> 0.3.0']
 
   # Developmnet Dependencies
-  s.add_development_dependency 'rspec', ['~> 2.2.0']
+  s.add_development_dependency 'rspec', ['~> 2.6.0']
   s.add_development_dependency 'mocha', ['~> 0.9.10']
 end
