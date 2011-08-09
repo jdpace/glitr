@@ -19,7 +19,7 @@ module Glitr
     end
 
     def fetch(query)
-      csv = get_cached_response(query_uri query)
+      csv = get_response(query_uri(query))
       BAMFCSV.parse(csv, :headers => true)
     rescue BAMFCSV::MalformedCSVError => e
       raise MalformedResponseError.new(csv)
@@ -49,14 +49,6 @@ module Glitr
 
     def get_response(uri)
       Typhoeus::Request.get(uri, :timeout => 60_000).body
-    end
-
-    def get_cached_response(uri)
-      if Glitr.config.cache_store
-        Glitr.config.cache_store.fetch(uri) { get_response uri }
-      else
-        get_response uri
-      end
     end
 
     def subjectify(result)
