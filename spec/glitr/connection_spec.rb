@@ -59,5 +59,6 @@ end
 
 def stub_response(connection, fixture_name)
   fixture = SpecRoot.join 'fixtures', 'responses', "#{fixture_name}.csv"
-  connection.stubs(:get_response).returns fixture.read
+  response = stub('fake_response', :body => fixture.read)
+  connection.stubs(:get).returns(response)
 end

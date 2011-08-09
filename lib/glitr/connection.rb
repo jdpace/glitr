@@ -7,8 +7,11 @@ module Glitr
   class Connection
 
     class MalformedResponseError < StandardError
+      attr_reader :response
+
       def initialize(response)
-        super "Couldn't parse response: #{response}"
+        @response = response
+        super "Couldn't parse response: #{@response.body}"
       end
     end
 
@@ -19,15 +22,24 @@ module Glitr
     end
 
     def fetch(query)
-      csv = get_response(query_uri(query))
-      BAMFCSV.parse(csv, :headers => true)
-    rescue BAMFCSV::MalformedCSVError => e
-      raise MalformedResponseError.new(csv)
+      response = get(query)
+      csv_from(response)
     end
 
     def fetch_subjects(query)
-      response = fetch(query)
-      subjectify(response)
+      csv = fetch(query)
+      subjectify(csv)
+    end
+
+    def get(query)
+      uri = query_uri(query)
+      Typhoeus::Request.get(uri, :timeout => 60_000)
+    end
+
+    def csv_from(response)
+      BAMFCSV.parse(response.body, :headers => true)
+    rescue BAMFCSV::MalformedCSVError => e
+      raise MalformedResponseError.new(response)
     end
 
     def query_uri(query)
@@ -35,20 +47,6 @@ module Glitr
       uri  = "#{options[:protocol]}://"
       uri << "#{options[:host]}:#{options[:port]}/#{options[:service]}"
       uri << "?output=csv&query=#{escaped_query}"
-    end
-
-    private
-
-    def default_options
-      {
-        :host     => 'localhost',
-        :port     => 2020,
-        :protocol => 'http'
-      }
-    end
-
-    def get_response(uri)
-      Typhoeus::Request.get(uri, :timeout => 60_000).body
     end
 
     def subjectify(result)
@@ -69,6 +67,16 @@ module Glitr
       end
 
       by_subject
+    end
+
+    private
+
+    def default_options
+      {
+        :host     => 'localhost',
+        :port     => 2020,
+        :protocol => 'http'
+      }
     end
 
   end
