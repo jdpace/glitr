@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    glitr (0.1.1)
+    glitr (0.2.0.alpha.7.rc.6.beetlejuice.beetlejuice.beetlejuice)
       bamfcsv (~> 0.3.0)
       typhoeus (~> 0.2.4)
 
