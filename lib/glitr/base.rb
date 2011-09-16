@@ -27,7 +27,7 @@ module Glitr
 
     def self.all(conditions = {})
       query = <<-QUERY
-        PREFIX :   <http://metrumrg.com/metamodl/>
+        PREFIX :   <#{@namespace}>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -48,7 +48,7 @@ module Glitr
 
     def self.select(attributes, conditions = {})
       query = <<-QUERY
-        PREFIX :   <http://metrumrg.com/metamodl/>
+        PREFIX :   <#{@namespace}/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -65,7 +65,7 @@ module Glitr
 
     def self.count(conditions = {})
       query = <<-QUERY
-        PREFIX :   <http://metrumrg.com/metamodl/>
+        PREFIX :   <#{@namespace}/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -85,9 +85,8 @@ module Glitr
     def self.columns
       return @columns if defined?(@columns)
 
-      namespace = "http://metrumrg.com/metamodl/"
       query = <<-QUERY
-        PREFIX :   <#{namespace}>
+        PREFIX :   <#{@namespace}>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -101,8 +100,8 @@ module Glitr
 
       result = connection.fetch(query)
       @columns = result.
-        select {|row| row['column'].match(/^#{namespace}/)}.
-        map {|row| row['column'].sub(/^#{namespace}/,"") }
+        select {|row| row['column'].match(/^#{@namespace}/)}.
+        map {|row| row['column'].sub(/^#{@namespace}/,"") }
     end
 
 
