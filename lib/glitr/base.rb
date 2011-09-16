@@ -146,7 +146,7 @@ module Glitr
     end
 
     def namespaced_key(key)
-      "#{self.class.namespace}/#{key}"
+      "#{self.class.namespace}#{key}"
     end
 
   end
