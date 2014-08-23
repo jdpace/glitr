@@ -21,8 +21,9 @@ Gem::Specification.new do |s|
 
   # Runtime Dependencies
   s.add_runtime_dependency 'typhoeus', ['~> 0.2.4']
+  s.add_runtime_dependency 'bamfcsv', ['~> 0.3.0']
 
   # Developmnet Dependencies
-  s.add_development_dependency 'rspec', ['~> 2.2.0']
+  s.add_development_dependency 'rspec', ['~> 2.6.0']
   s.add_development_dependency 'mocha', ['~> 0.9.10']
 end

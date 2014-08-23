@@ -1,5 +1,5 @@
 require 'cgi'
-require 'csv'
+require 'bamfcsv'
 require 'typhoeus'
 
 module Glitr
@@ -7,8 +7,11 @@ module Glitr
   class Connection
 
     class MalformedResponseError < StandardError
+      attr_reader :response
+
       def initialize(response)
-        super "Couldn't parse response: #{response}"
+        @response = response
+        super "Couldn't parse response: #{@response.body}"
       end
     end
 
@@ -19,15 +22,26 @@ module Glitr
     end
 
     def fetch(query)
-      csv = get_cached_response(query_uri query)
-      CSV.parse(csv, :headers => true)
-    rescue CSV::MalformedCSVError => e
-      raise MalformedResponseError.new(csv)
+      response = get(query)
+      csv_from(response)
     end
 
     def fetch_subjects(query)
-      response = fetch(query)
-      subjectify(response)
+      csv = fetch(query)
+      subjectify(csv)
+    end
+
+    def get(query)
+      uri = query_uri(query)
+      response = Typhoeus::Request.get(uri, :timeout => 60_000)
+      force_encoding_on(response)
+      response
+    end
+
+    def csv_from(response)
+      BAMFCSV.parse(response.body, :headers => true)
+    rescue BAMFCSV::MalformedCSVError => e
+      raise MalformedResponseError.new(response)
     end
 
     def query_uri(query)
@@ -35,28 +49,6 @@ module Glitr
       uri  = "#{options[:protocol]}://"
       uri << "#{options[:host]}:#{options[:port]}/#{options[:service]}"
       uri << "?output=csv&query=#{escaped_query}"
-    end
-
-    private
-
-    def default_options
-      {
-        :host     => 'localhost',
-        :port     => 2020,
-        :protocol => 'http'
-      }
-    end
-
-    def get_response(uri)
-      Typhoeus::Request.get(uri, :timeout => 60_000).body
-    end
-
-    def get_cached_response(uri)
-      if Glitr.config.cache_store
-        Glitr.config.cache_store.fetch(uri) { get_response uri }
-      else
-        get_response uri
-      end
     end
 
     def subjectify(result)
@@ -77,6 +69,20 @@ module Glitr
       end
 
       by_subject
+    end
+
+    private
+
+    def default_options
+      {
+        :host     => 'localhost',
+        :port     => 2020,
+        :protocol => 'http'
+      }
+    end
+
+    def force_encoding_on(response)
+      response.body.force_encoding('UTF-8')
     end
 
   end
